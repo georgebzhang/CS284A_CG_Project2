@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184 MeshEdit</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2019</h1>
+<h1 align="middle">Project 2: MeshEdit</h1>
+<h2 align="middle">George Zhang, CS184-georgebzhang</h2>
+
+<br><br>
+
+<div>
+
+<p>After pulling the new skeleton with CMakeLists setting: option(BUILD_DEBUG     "Build with debug settings"    OFF), I deleted the build folder and generated a new one. Then, I opened the project in Visual Studio 2017, set the Mode to Release instead of Debug (near the Run button), and built the solution. In the Properties of ALL_BUILD, I set the Command to $(ProjectDir)Release/meshedit.exe and the Command Arguments to $(SolutionDir)../bez/teapot.bez. Setting the Mode to Release is not enough. I also had to set the path in Command to meshedit.exe in the Release folder, not the Debug folder.</p>
+
+<h2 align="middle">Overview</h2>
+<p>In this project, I  explored how Bezier curves are generated and how that extends to Bezier surfaces. I also learned how to traverse a triangle mesh using the concept of halfedges and how to implement flipping and splitting of edges, which may be used for upsampling and downsampling. Overall, this project made the concepts taught in lecture much clearer after having to implement some of the functions myself.</p>
+
+<h2 align="middle">Section 1: Bezier Curves and Surfaces</h2>
+
+<h3 align="middle">Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+
+<p>The De Casteljiau algorithm takes as input a series of n points. Using linear interpolation between every pair of adjacent points, the algorithm generates n-1 points. It does this recursively (or iteratively) until it generates only 1 point.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/p1a.png" align="middle" width="300px"/>
+        <figcaption align="middle">Control points.</figcaption>
+      </td>
+      <td>
+        <img src="images/p1b.png" align="middle" width="300px"/>
+        <figcaption align="middle">1st iteration.</figcaption>
+      </td>
+	  <td>
+        <img src="images/p1c.png" align="middle" width="300px"/>
+        <figcaption align="middle">2nd iteration.</figcaption>
+      </td>
+    </tr>
+	<tr>
+      <td>
+        <img src="images/p1d.png" align="middle" width="300px"/>
+        <figcaption align="middle">3rd iteration.</figcaption>
+      </td>
+      <td>
+        <img src="images/p1e.png" align="middle" width="300px"/>
+        <figcaption align="middle">4th iteration.</figcaption>
+      </td>
+	  <td>
+        <img src="images/p1f.png" align="middle" width="300px"/>
+        <figcaption align="middle">5th iteration.</figcaption>
+      </td>
+    </tr>
+	<tr>
+      <td>
+        <img src="images/p1g.png" align="middle" width="300px"/>
+        <figcaption align="middle">t = 0.5.</figcaption>
+      </td>
+      <td>
+        <img src="images/p1h.png" align="middle" width="300px"/>
+        <figcaption align="middle">t approaching 0.</figcaption>
+      </td>
+	  <td>
+        <img src="images/p1i.png" align="middle" width="300px"/>
+        <figcaption align="middle">t approaching 1.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 2: Bezier surfaces with separable 1D de Casteljau subdivision</h3>
+
+<p>First, I added a 3D lerp function, similar to the 2D lerp function in Part 1. controlPoints has 4 rows of 4 points. For each row, I input the 4 points into evaluate1D, which returns the point on the Bezier curve with parameter u. After the 4 rows are processed, we have 4 points (one on each Bezier curve) with parameter u. I simply input these 4 points into evaluate1D again with parameter v. </p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/p2a.png" align="middle" width="600px"/>
+        <figcaption align="middle">Teapot.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2 align="middle">Section II: Loop Subdivision of General Triangle Meshes</h2>
+
+<h3 align="middle">Part 3: Average normals for half-edge meshes</h3>
+
+<p>For each face contacting the vertex, I obtained its 3 vertices, and calculated the cross product of the 2 edges formed by those vertices. I averaged all the cross products (one per face) and normalized it. Note that the cross product also has a direction. I found that I had to multiply the cross product by -1 to get the correct result (normals are probably pointing inwards otherwise). It's possible to get the correct result by if the order of edge traversal was reversed.  I also noticed that Face has a method normal(void), which I could have also used.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/p3a.png" align="middle" width="450px"/>
+        <figcaption align="middle">Face normals (with wireframe).</figcaption>
+      </td>
+	  <td>
+        <img src="images/p3b.png" align="middle" width="450px"/>
+        <figcaption align="middle">Face normals (without wireframe).</figcaption>
+      </td>
+    </tr>
+	<tr>
+      <td>
+        <img src="images/p3c.png" align="middle" width="450px"/>
+        <figcaption align="middle">Average vertex normals  (withg wireframe).</figcaption>
+      </td>
+	  <td>
+        <img src="images/p3d.png" align="middle" width="450px"/>
+        <figcaption align="middle">Average vertex normals  (without wireframe).</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 4: Half-edge flip</h3>
+
+<p>I simply collected all of the halfedge, vertex, edge, and face values, then reassigned each one to its changed value after edge flipping. I later commented out some unnecessary reassignments. </p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/p4a.png" align="middle" width="450px"/>
+        <figcaption align="middle">No edge flips.</figcaption>
+      </td>
+	  <td>
+        <img src="images/p4b.png" align="middle" width="450px"/>
+        <figcaption align="middle">Some edge flips.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3 align="middle">Part 5: Half-edge split</h3>
+
+<p>I followed a similar process to Part 4. My initial source of errors were due to not keeping halfedges consistent in my drawings before and after the edge split.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/p5a.png" align="middle" width="450px"/>
+        <figcaption align="middle">No edge splits.</figcaption>
+      </td>
+	  <td>
+        <img src="images/p5b.png" align="middle" width="450px"/>
+        <figcaption align="middle">Some edge splits.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 6: Loop subdivision for mesh upsampling</h3>
+
+<p>To debug, for every iteration loop, I added a print statement to see which loop (if any) was running infinitely. We can mitigate sharp corners, edges, and asymmetry by splitting or flipping edges such that the non-upsampled mesh is symmetric.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/p6a.png" align="middle" width="300px"/>
+        <figcaption align="middle">No upsample.</figcaption>
+      </td>
+	  <td>
+        <img src="images/p6b.png" align="middle" width="300px"/>
+        <figcaption align="middle">Upsample (without wireframe).</figcaption>
+      </td>
+	  <td>
+        <img src="images/p6c.png" align="middle" width="300px"/>
+        <figcaption align="middle">Upsample (without wireframe).</figcaption>
+      </td>
+    </tr>
+	<tr>
+      <td>
+        <img src="images/p6d.png" align="middle" width="300px"/>
+        <figcaption align="middle">No upsample (with split).</figcaption>
+      </td>
+	  <td>
+        <img src="images/p6e.png" align="middle" width="300px"/>
+        <figcaption align="middle">Upsample (without wireframe).</figcaption>
+      </td>
+	  <td>
+        <img src="images/p6f.png" align="middle" width="300px"/>
+        <figcaption align="middle">Upsample (without wireframe).</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>

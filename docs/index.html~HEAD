@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184 Rasterizer</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2019</h1>
+<h1 align="middle">Project 2: MeshEdit</h1>
+<h2 align="middle">George Zhang, CS184-georgebzhang</h2>
+
+<br><br>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+<p>In this project, I ... </p>
+
+<h2 align="middle">Section 1: Bezier Curves and Surfaces</h2>
+
+<h3 align="middle">Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+
+<p>The De Casteljiau algorithm takes as input a series of n points. Using linear interpolation between every pair of adjacent points, the algorithm generates n-1 points. It does this recursively (or iteratively) until it generates only 1 point.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/p1a.png" align="middle" width="300px"/>
+        <figcaption align="middle">Control points.</figcaption>
+      </td>
+      <td>
+        <img src="images/p1b.png" align="middle" width="300px"/>
+        <figcaption align="middle">1st iteration.</figcaption>
+      </td>
+	  <td>
+        <img src="images/p1c.png" align="middle" width="300px"/>
+        <figcaption align="middle">2nd iteration.</figcaption>
+      </td>
+    </tr>
+	<tr>
+      <td>
+        <img src="images/p1d.png" align="middle" width="300px"/>
+        <figcaption align="middle">3rd iteration.</figcaption>
+      </td>
+      <td>
+        <img src="images/p1e.png" align="middle" width="300px"/>
+        <figcaption align="middle">4tht iteration.</figcaption>
+      </td>
+	  <td>
+        <img src="images/p1f.png" align="middle" width="300px"/>
+        <figcaption align="middle">5th iteration.</figcaption>
+      </td>
+    </tr>
+	<tr>
+      <td>
+        <img src="images/p1g.png" align="middle" width="300px"/>
+        <figcaption align="middle">t = 0.5.</figcaption>
+      </td>
+      <td>
+        <img src="images/p1h.png" align="middle" width="300px"/>
+        <figcaption align="middle">t approaching 0.</figcaption>
+      </td>
+	  <td>
+        <img src="images/p1i.png" align="middle" width="300px"/>
+        <figcaption align="middle">t approaching 1.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 2: Bezier surfaces with separable 1D de Casteljau subdivision</h3>
+
+<p>XXX</p>
+
+
+
+<h2 align="middle">Section II: Loop Subdivision of General Triangle Meshes</h2>
+
+<h3 align="middle">Part 3: Average normals for half-edge meshes</h3>
+
+<p>XXX</p>
+
+
+<h3 align="middle">Part 4: Half-edge flip</h3>
+
+<p>XXX</p>
+
+
+<h3 align="middle">Part 5: Half-edge split</h3>
+
+<p>XXX</p>
+
+
+<h3 align="middle">Part 6: Loop subdivision for mesh upsampling</h3>
+
+<p>XXX</p>
+
+</body>
+</html>
